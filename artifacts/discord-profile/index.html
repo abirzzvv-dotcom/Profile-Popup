@@ -473,6 +473,67 @@
       font-weight: 500;
     }
 
+    .proj-expand-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #4e5058;
+      font-size: 10.5px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      padding: 7px 0 0;
+      transition: color 0.2s;
+      width: 100%;
+      text-align: left;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .proj-expand-btn:hover { color: #9c84fc; }
+    .proj-expand-btn .chevron {
+      transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+      flex-shrink: 0;
+    }
+    .proj-expand-btn.open .chevron { transform: rotate(180deg); }
+
+    .proj-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.16,1,0.3,1), opacity 0.25s ease;
+      opacity: 0;
+    }
+    .proj-details.open {
+      max-height: 300px;
+      opacity: 1;
+    }
+    .proj-details-inner {
+      padding: 9px 0 3px;
+      border-top: 1px solid #2e3035;
+      margin-top: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .proj-detail-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: #9ea8b3;
+      font-size: 11.5px;
+      line-height: 1.5;
+    }
+    .proj-detail-bullet {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #5865f2;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .proj.ongoing .proj-detail-bullet { background: #9c84fc; }
+
     .loader {
       display: flex;
       gap: 6px;
@@ -684,13 +745,37 @@ function mkCard(p, isOngoing) {
       <span class="proj-name">${p.name}</span>
       <a class="proj-gh-link" href="${p.link}" target="_blank" rel="noopener noreferrer" title="View on GitHub">${ghIcon}</a>
     </div>
-    <div class="proj-desc">${clip(p.description)}</div>
+    <div class="proj-desc">${p.description}</div>
     ${progress}
     <div class="proj-meta">
       <div class="lang-wrap">${langDot}<span class="lang-name">${p.language}</span></div>
       ${tags}
     </div>
   `;
+
+  if (p.details && p.details.length > 0) {
+    const chevron = `<svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
+    const detailItems = p.details.map(d => `<div class="proj-detail-item"><span class="proj-detail-bullet"></span><span>${d}</span></div>`).join('');
+
+    const btn = document.createElement('button');
+    btn.className = 'proj-expand-btn';
+    btn.innerHTML = `<span>details</span>${chevron}`;
+
+    const box = document.createElement('div');
+    box.className = 'proj-details';
+    box.innerHTML = `<div class="proj-details-inner">${detailItems}</div>`;
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = box.classList.toggle('open');
+      btn.classList.toggle('open', open);
+      btn.querySelector('span').textContent = open ? 'hide' : 'details';
+    });
+
+    el.appendChild(btn);
+    el.appendChild(box);
+  }
+
   return el;
 }
 

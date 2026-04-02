@@ -3,6 +3,7 @@
     "id": "server-info-selfbot",
     "name": "server info selfbot",
     "description": "basically no fucking permissions, BUT you can see stuff like role permissions, hierarchy and stuff.",
+    "details": ["lists all roles and their permission flags", "shows channel permission overrides per role", "displays full server hierarchy tree", "no admin perms needed, runs on user token", "currently working on member audit log scraping"],
     "link": "https://www.google.com/search?q=not+done+yet+brochacho",
     "language": "Node JS",
     "langColor": "#68a063",

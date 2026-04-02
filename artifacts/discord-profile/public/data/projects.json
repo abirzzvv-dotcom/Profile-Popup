@@ -3,6 +3,7 @@
     "id": "music-selfbot",
     "name": "music selfbot",
     "description": "you need NOTHING, and i mean NOTHING to run this, except for your token EXCEPT its not finished yet is it...",
+    "details": ["plays music directly in voice channels via selfbot", "no bot token needed, just your user token", "supports youtube, soundcloud and more", "queue system with skip, pause, stop commands", "zero external dependencies beyond audio libs"],
     "link": "https://www.google.com/search?q=i+wonder+what+curiousity+brings+you+here",
     "language": "Node JS",
     "langColor": "#68a063",
