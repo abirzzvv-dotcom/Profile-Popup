@@ -1,11 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72">
   <defs>
-    <radialGradient id="mg" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#43e97b"/>
-      <stop offset="100%" stop-color="#23a55a"/>
+    <radialGradient id="sky" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#87ceeb"/>
+      <stop offset="100%" stop-color="#4a9eda"/>
     </radialGradient>
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fffde7"/>
+      <stop offset="100%" stop-color="#fdd835"/>
+    </radialGradient>
+    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4caf50"/>
+      <stop offset="100%" stop-color="#2e7d32"/>
+    </linearGradient>
+    <clipPath id="circle">
+      <circle cx="36" cy="36" r="34"/>
+    </clipPath>
   </defs>
-  <circle cx="24" cy="24" r="22" fill="url(#mg)"/>
-  <text x="24" y="30" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="16" fill="white">67</text>
-  <path d="M10 28 Q16 18 24 22 Q32 18 38 28" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="36" cy="36" r="34" fill="url(#sky)"/>
+  <g clip-path="url(#circle)">
+    <circle cx="20" cy="20" r="8" fill="url(#sun)" opacity="0.9"/>
+    <ellipse cx="36" cy="38" rx="36" ry="22" fill="url(#grass)"/>
+    <ellipse cx="10" cy="48" rx="10" ry="7" fill="#388e3c"/>
+    <ellipse cx="62" cy="50" rx="12" ry="8" fill="#388e3c"/>
+    <path d="M24 44 Q28 34 32 38 Q36 28 40 36 Q44 30 48 40" fill="none" stroke="#66bb6a" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M15 54 Q18 46 21 50" fill="none" stroke="#81c784" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M50 52 Q53 44 56 48" fill="none" stroke="#81c784" stroke-width="1.2" stroke-linecap="round"/>
+    <circle cx="28" cy="40" r="2.5" fill="#ffeb3b" opacity="0.8"/>
+    <circle cx="45" cy="43" r="2" fill="#ff80ab" opacity="0.8"/>
+  </g>
+  <circle cx="36" cy="36" r="34" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
 </svg>
