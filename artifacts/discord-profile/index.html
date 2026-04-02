@@ -319,14 +319,30 @@
       background: #18191c;
       border-radius: 10px;
       padding: 13px 15px;
-      text-decoration: none;
       border: 1px solid #2e3035;
       transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.25s cubic-bezier(0.34,1.4,0.64,1);
       position: relative;
       overflow: hidden;
       opacity: 0;
       transform: translateY(12px);
+      cursor: default;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
+    .proj-gh-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #72767d;
+      transition: color 0.2s;
+      cursor: pointer;
+      padding: 2px;
+      border-radius: 4px;
+      text-decoration: none;
+      outline: none;
+    }
+    .proj-gh-link:hover { color: #9c84fc; }
     .proj.in {
       opacity: 1;
       transform: translateY(0) scale(1);
@@ -647,11 +663,8 @@ function renderList() {
 }
 
 function mkCard(p, isOngoing) {
-  const a = document.createElement('a');
-  a.href = p.link;
-  a.target = '_blank';
-  a.rel = 'noopener noreferrer';
-  a.className = 'proj' + (isOngoing ? ' ongoing' : '');
+  const el = document.createElement('div');
+  el.className = 'proj' + (isOngoing ? ' ongoing' : '');
 
   const langDot = `<span class="lang-dot" style="background:${p.langColor};box-shadow:0 0 5px ${p.langColor}66"></span>`;
   const tags = p.tags.map(t => `<span class="tag">${t}</span>`).join('');
@@ -665,14 +678,11 @@ function mkCard(p, isOngoing) {
     </div>
   ` : '';
 
-  a.innerHTML = `
+  el.innerHTML = `
     <div class="proj-top-bar"></div>
     <div class="proj-head">
       <span class="proj-name">${p.name}</span>
-      <div class="proj-icons">
-        <span class="proj-icon">${ghIcon}</span>
-        <span class="proj-icon">${extLink}</span>
-      </div>
+      <a class="proj-gh-link" href="${p.link}" target="_blank" rel="noopener noreferrer" title="View on GitHub">${ghIcon}</a>
     </div>
     <div class="proj-desc">${clip(p.description)}</div>
     ${progress}
@@ -681,7 +691,7 @@ function mkCard(p, isOngoing) {
       ${tags}
     </div>
   `;
-  return a;
+  return el;
 }
 
 load().catch(() => {
