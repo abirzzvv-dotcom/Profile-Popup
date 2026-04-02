@@ -4,6 +4,15 @@
 
 pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
 
+## Artifacts
+
+### `artifacts/discord-profile` — Discord Profile Card
+- Single-page React + Vite app, dark theme, Discord-styled profile popup
+- Loads all data from `public/data/` JSON files (profile, badges, projects, ongoing)
+- Badge icons live in `public/badges/` as SVGs
+- Features: avatar with online status dot, badges (shake on click, popup tooltip), Projects/Ongoing tabs with counts, project cards with tags/language/progress bars
+- No backend, no routing, no framework dependencies beyond React
+
 ## Stack
 
 - **Monorepo tool**: pnpm workspaces

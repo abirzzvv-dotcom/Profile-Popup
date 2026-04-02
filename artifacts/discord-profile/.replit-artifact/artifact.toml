@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Discord Profile"
+version = "1.0.0"
+id = "artifacts/discord-profile"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22684
+
+[services.development]
+run = "pnpm --filter @workspace/discord-profile run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/discord-profile", "run", "build" ]
+publicDir = "artifacts/discord-profile/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22684"
+BASE_PATH = "/"
