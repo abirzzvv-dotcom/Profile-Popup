@@ -1,0 +1,11 @@
+[
+  {
+    "id": "music-selfbot",
+    "name": "music selfbot",
+    "description": "you need NOTHING, and i mean NOTHING to run this, except for your token EXCEPT its not finished yet is it...",
+    "link": "https://www.google.com/search?q=i+wonder+what+curiousity+brings+you+here",
+    "language": "Node JS",
+    "langColor": "#68a063",
+    "tags": ["NodeJS", "Selfbot", "Discord", "Music"]
+  }
+]

@@ -30,8 +30,8 @@
       to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes popIn {
-      from { opacity: 0; transform: translateX(-50%) scale(0.8) translateY(6px); }
-      to   { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
+      from { opacity: 0; transform: translateX(-50%) translateY(calc(-100% - 10px)) scale(0.85); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(calc(-100% - 10px)) scale(1); }
     }
     @keyframes shake {
       0%,100% { transform: rotate(0deg) scale(1); }
@@ -136,7 +136,6 @@
       font-size: 12px;
       color: #9ea8b3;
       margin-top: 3px;
-      font-style: italic;
       opacity: 0.85;
     }
 
@@ -210,16 +209,14 @@
     .badge-icon.shaking { animation: shake 0.44s ease; }
 
     .badge-popup {
-      position: absolute;
-      bottom: calc(100% + 10px);
-      left: 50%;
-      transform: translateX(-50%);
+      position: fixed;
+      transform: translateX(-50%) translateY(calc(-100% - 10px));
       background: #111214;
       border: 1px solid var(--accent-light);
       border-radius: 10px;
       padding: 12px 13px;
       width: 215px;
-      z-index: 999;
+      z-index: 9999;
       pointer-events: none;
       box-shadow: 0 6px 24px rgba(0,0,0,0.7), 0 0 0 1px var(--accent-dim);
       animation: popIn 0.18s cubic-bezier(0.34,1.56,0.64,1);
@@ -332,15 +329,14 @@
     }
     .proj.in {
       opacity: 1;
-      transform: translateY(0);
-      transition: border-color 0.2s, background 0.2s, box-shadow 0.3s, transform 0.35s ease;
+      transform: translateY(0) scale(1);
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.3s, transform 0.25s cubic-bezier(0.34,1.4,0.64,1);
     }
     .proj:hover {
       background: #1c1e21;
       border-color: #5865f2;
       box-shadow: 0 6px 24px rgba(88,101,242,0.18), 0 2px 8px rgba(0,0,0,0.45);
-      transform: translateY(-3px) !important;
-      animation: float 2.5s ease-in-out infinite;
+      transform: scale(1.025) !important;
     }
     .proj.ongoing:hover {
       border-color: #9c84fc;
@@ -582,8 +578,8 @@ function renderBadges() {
       icon.classList.add('shaking');
       setTimeout(() => icon.classList.remove('shaking'), 450);
       if (popup) { popup.remove(); popup = null; return; }
-      popup = mkPopup(b);
-      wrap.appendChild(popup);
+      popup = mkPopup(b, icon);
+      document.body.appendChild(popup);
       const close = e => { if (!wrap.contains(e.target)) { popup?.remove(); popup = null; document.removeEventListener('mousedown', close); } };
       setTimeout(() => document.addEventListener('mousedown', close), 10);
     };
@@ -595,7 +591,7 @@ function renderBadges() {
   });
 }
 
-function mkPopup(b) {
+function mkPopup(b, anchor) {
   const p = document.createElement('div');
   p.className = 'badge-popup';
   p.style.setProperty('--accent-light', b.accent + '55');
@@ -609,6 +605,11 @@ function mkPopup(b) {
     <div class="badge-popup-bar" style="background:linear-gradient(90deg,${b.accent}99,transparent)"></div>
     <div class="badge-popup-arrow"></div>
   `;
+  if (anchor) {
+    const rect = anchor.getBoundingClientRect();
+    p.style.left = (rect.left + rect.width / 2) + 'px';
+    p.style.top = rect.top + 'px';
+  }
   return p;
 }
 
