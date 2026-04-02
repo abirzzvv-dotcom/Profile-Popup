@@ -1,16 +1,691 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Discord Profile</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abirz — Discord Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f0f10;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      color: #dcddde;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(28px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: translateX(-50%) scale(0.8) translateY(6px); }
+      to   { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
+    }
+    @keyframes shake {
+      0%,100% { transform: rotate(0deg) scale(1); }
+      15%     { transform: rotate(-14deg) scale(1.12); }
+      30%     { transform: rotate(14deg) scale(1.12); }
+      50%     { transform: rotate(-8deg) scale(1.06); }
+      70%     { transform: rotate(8deg) scale(1.06); }
+      90%     { transform: rotate(-3deg) scale(1.02); }
+    }
+    @keyframes shimmer {
+      0%   { left: -80%; }
+      100% { left: 160%; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-4px); }
+    }
+    @keyframes dotPulse {
+      0%,80%,100% { transform: scale(0.5); opacity: 0.3; }
+      40%         { transform: scale(1);   opacity: 1; }
+    }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2e3035; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #5865f2; }
+
+    #card {
+      background: #1e1f22;
+      border-radius: 14px;
+      width: 340px;
+      overflow: visible;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.75), 0 4px 16px rgba(0,0,0,0.5);
+      animation: cardIn 0.55s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+
+    .banner {
+      height: 96px;
+      background: linear-gradient(180deg, #000 0%, #0a0a0c 100%);
+      border-radius: 14px 14px 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 25% 50%, rgba(88,101,242,0.1) 0%, transparent 65%);
+    }
+
+    .body { padding: 0 16px 18px; overflow: visible; }
+
+    .avatar-wrap {
+      position: relative;
+      display: inline-block;
+      margin-top: -46px;
+      margin-bottom: 11px;
+    }
+    .avatar-ring {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      padding: 4px;
+      background: linear-gradient(135deg, rgba(88,101,242,0.35), rgba(156,132,252,0.35));
+      box-shadow: 0 0 0 3px #1e1f22, 0 0 20px rgba(88,101,242,0.2);
+    }
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #5865f2;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .avatar-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .avatar-initials { color: #fff; font-size: 26px; font-weight: 800; }
+    .status-dot {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 3px solid #1e1f22;
+    }
+
+    .username {
+      font-size: 19px;
+      font-weight: 800;
+      color: #f2f3f5;
+      letter-spacing: -0.3px;
+    }
+    .handle {
+      font-size: 13px;
+      color: #72767d;
+      margin-left: 6px;
+      font-weight: 400;
+    }
+    .tagline {
+      font-size: 12px;
+      color: #9ea8b3;
+      margin-top: 3px;
+      font-style: italic;
+      opacity: 0.85;
+    }
+
+    .bio-box {
+      background: #111214;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 12px 0 14px;
+      border: 1px solid #25262a;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.025);
+      animation: fadeUp 0.4s ease 0.15s both;
+    }
+    .bio-content {
+      padding: 12px 14px 11px;
+      border-left: 3px solid #5865f2;
+      background: linear-gradient(90deg, rgba(88,101,242,0.08) 0%, transparent 85%);
+    }
+    .bio-name {
+      color: #f2f3f5;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 5px;
+      letter-spacing: -0.1px;
+    }
+    .bio-desc {
+      color: #72767d;
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+
+    .badges-row {
+      border-top: 1px solid #25262a;
+      padding: 9px 14px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      background: rgba(0,0,0,0.18);
+    }
+    .badges-label {
+      color: #4e5058;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      margin-right: 2px;
+    }
+
+    .badge-wrap {
+      position: relative;
+      opacity: 0;
+      transform: scale(0.5) translateY(5px);
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+    }
+    .badge-wrap.in {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    .badge-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+    }
+    .badge-icon:hover { box-shadow: var(--glow); }
+    .badge-icon img { width: 24px; height: 24px; object-fit: contain; display: block; }
+    .badge-icon.shaking { animation: shake 0.44s ease; }
+
+    .badge-popup {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111214;
+      border: 1px solid var(--accent-light);
+      border-radius: 10px;
+      padding: 12px 13px;
+      width: 215px;
+      z-index: 999;
+      pointer-events: none;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.7), 0 0 0 1px var(--accent-dim);
+      animation: popIn 0.18s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .badge-popup-top {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .badge-popup-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .badge-popup-icon img { width: 22px; height: 22px; object-fit: contain; }
+    .badge-popup-name { color: #dcddde; font-size: 13px; font-weight: 600; line-height: 1.3; }
+    .badge-popup-desc { color: #72767d; font-size: 11.5px; line-height: 1.5; }
+    .badge-popup-bar {
+      height: 2px;
+      border-radius: 2px;
+      margin-top: 10px;
+    }
+    .badge-popup-arrow {
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 8px;
+      height: 8px;
+      background: #111214;
+      border: 1px solid var(--accent-light);
+      border-top: none;
+      border-left: none;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #25262a;
+      margin-bottom: 12px;
+      gap: 2px;
+      animation: fadeUp 0.4s ease 0.25s both;
+    }
+    .tab {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 12px;
+      color: #72767d;
+      font-size: 13px;
+      font-weight: 400;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.15s, border-color 0.15s;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab:hover { color: #9ea8b3; }
+    .tab.active { color: #f2f3f5; font-weight: 600; border-bottom-color: #5865f2; }
+    .tab-count {
+      background: #25262a;
+      color: #72767d;
+      border-radius: 10px;
+      padding: 0 6px;
+      font-size: 10px;
+      font-weight: 700;
+      min-width: 18px;
+      line-height: 18px;
+      text-align: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .tab.active .tab-count { background: #5865f2; color: #fff; }
+
+    .list {
+      max-height: 290px;
+      overflow-y: auto;
+      padding-right: 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      animation: fadeUp 0.4s ease 0.3s both;
+    }
+    .empty {
+      color: #72767d;
+      font-size: 13px;
+      text-align: center;
+      padding: 26px 0;
+    }
+
+    .proj {
+      display: block;
+      background: #18191c;
+      border-radius: 10px;
+      padding: 13px 15px;
+      text-decoration: none;
+      border: 1px solid #2e3035;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.25s cubic-bezier(0.34,1.4,0.64,1);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    .proj.in {
+      opacity: 1;
+      transform: translateY(0);
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.3s, transform 0.35s ease;
+    }
+    .proj:hover {
+      background: #1c1e21;
+      border-color: #5865f2;
+      box-shadow: 0 6px 24px rgba(88,101,242,0.18), 0 2px 8px rgba(0,0,0,0.45);
+      transform: translateY(-3px) !important;
+      animation: float 2.5s ease-in-out infinite;
+    }
+    .proj.ongoing:hover {
+      border-color: #9c84fc;
+      box-shadow: 0 6px 24px rgba(156,132,252,0.18), 0 2px 8px rgba(0,0,0,0.45);
+    }
+    .proj-top-bar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #5865f2, #9c84fc);
+      border-radius: 10px 10px 0 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .proj.ongoing .proj-top-bar { background: linear-gradient(90deg, #9c84fc, #5865f2); }
+    .proj:hover .proj-top-bar { opacity: 1; }
+
+    .proj-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 5px;
+    }
+    .proj-name {
+      color: #9c84fc;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.01em;
+    }
+    .proj-icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .proj-icon {
+      color: #72767d;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+    }
+    .proj:hover .proj-icon { color: #9c84fc; }
+
+    .proj-desc {
+      color: #72767d;
+      font-size: 12px;
+      margin-bottom: 10px;
+      line-height: 1.55;
+    }
+
+    .progress-wrap { margin-bottom: 10px; }
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .progress-label {
+      color: #72767d;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .progress-pct { color: #9c84fc; font-size: 10.5px; font-weight: 700; }
+    .progress-bg {
+      background: #2a2b2f;
+      border-radius: 6px;
+      height: 7px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #5865f2, #9c84fc);
+      border-radius: 6px;
+      width: 0%;
+      transition: width 1s cubic-bezier(0.16,1,0.3,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -80%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      animation: shimmer 2.4s ease-in-out infinite;
+    }
+
+    .proj-meta {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .lang-wrap {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-right: 4px;
+    }
+    .lang-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .lang-name { color: #9ea8b3; font-size: 11px; font-weight: 500; }
+    .tag {
+      background: #2a2b2f;
+      color: #9ea8b3;
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid #2e3035;
+      font-weight: 500;
+    }
+
+    .loader {
+      display: flex;
+      gap: 6px;
+    }
+    .loader-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #5865f2;
+    }
+  </style>
+</head>
+<body>
+
+<div id="card">
+  <div class="banner"></div>
+  <div class="body">
+    <div class="avatar-wrap">
+      <div class="avatar-ring">
+        <div class="avatar-img" id="avatarImg">
+          <span class="avatar-initials" id="avatarInitials"></span>
+        </div>
+      </div>
+      <div class="status-dot" id="statusDot"></div>
+    </div>
+
+    <div style="margin-bottom:13px">
+      <div>
+        <span class="username" id="uname"></span>
+        <span class="handle" id="handle"></span>
+      </div>
+      <div class="tagline" id="tagline"></div>
+    </div>
+
+    <div class="bio-box">
+      <div class="bio-content">
+        <div class="bio-name" id="bioName"></div>
+        <div class="bio-desc" id="bioDesc"></div>
+      </div>
+      <div class="badges-row" id="badgesRow">
+        <span class="badges-label">Badges</span>
+      </div>
+    </div>
+
+    <div class="tabs" id="tabs"></div>
+
+    <div class="list" id="list"></div>
+  </div>
+</div>
+
+<script>
+const MAX = 65;
+const clip = s => s.length > MAX ? s.slice(0, MAX) + '\u2026' : s;
+const $ = id => document.getElementById(id);
+const svg = (d, extra='') => `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ${extra}>${d}</svg>`;
+const ghIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:block"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>`;
+const extLink = svg('<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>');
+
+let profile, badges, projects, ongoing, activeTab = 'projects';
+
+async function load() {
+  const base = './';
+  [profile, badges, projects, ongoing] = await Promise.all([
+    fetch(base+'data/profile.json').then(r=>r.json()),
+    fetch(base+'data/badges.json').then(r=>r.json()),
+    fetch(base+'data/projects.json').then(r=>r.json()),
+    fetch(base+'data/ongoing.json').then(r=>r.json()),
+  ]);
+  render();
+}
+
+function render() {
+  const dotColor = { online: '#3ba55c', idle: '#faa81a', dnd: '#ed4245' }[profile.status] || '#747f8d';
+
+  $('uname').textContent = profile.username;
+  $('handle').textContent = '@' + profile.handle;
+  $('tagline').textContent = profile.tagline;
+  $('bioName').textContent = profile.bio;
+  $('bioDesc').textContent = profile.description;
+
+  const dot = $('statusDot');
+  dot.style.background = dotColor;
+  dot.style.boxShadow = `0 0 8px ${dotColor}99`;
+
+  const img = new Image();
+  img.src = profile.avatar;
+  img.onload = () => {
+    const ai = $('avatarImg');
+    ai.innerHTML = '';
+    ai.appendChild(img);
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;border-radius:50%';
+  };
+  img.onerror = () => { $('avatarInitials').textContent = profile.initials; };
+  $('avatarInitials').textContent = profile.initials;
+
+  renderBadges();
+  renderTabs();
+  renderList();
+}
+
+function renderBadges() {
+  const row = $('badgesRow');
+  row.innerHTML = '<span class="badges-label">Badges</span>';
+  badges.forEach((b, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'badge-wrap';
+    wrap.style.setProperty('--glow', `0 0 12px ${b.accent}99`);
+
+    const icon = document.createElement('div');
+    icon.className = 'badge-icon';
+
+    const im = document.createElement('img');
+    im.src = `./badges/${b.id}.${b.ext}`;
+    im.alt = b.name;
+    icon.appendChild(im);
+
+    let popup = null;
+    icon.onclick = () => {
+      icon.classList.add('shaking');
+      setTimeout(() => icon.classList.remove('shaking'), 450);
+      if (popup) { popup.remove(); popup = null; return; }
+      popup = mkPopup(b);
+      wrap.appendChild(popup);
+      const close = e => { if (!wrap.contains(e.target)) { popup?.remove(); popup = null; document.removeEventListener('mousedown', close); } };
+      setTimeout(() => document.addEventListener('mousedown', close), 10);
+    };
+
+    wrap.appendChild(icon);
+    row.appendChild(wrap);
+
+    setTimeout(() => wrap.classList.add('in'), i * 90 + 250);
+  });
+}
+
+function mkPopup(b) {
+  const p = document.createElement('div');
+  p.className = 'badge-popup';
+  p.style.setProperty('--accent-light', b.accent + '55');
+  p.style.setProperty('--accent-dim', b.accent + '22');
+  p.innerHTML = `
+    <div class="badge-popup-top">
+      <div class="badge-popup-icon"><img src="./badges/${b.id}.${b.ext}" alt="${b.name}" /></div>
+      <div class="badge-popup-name">${b.name}</div>
+    </div>
+    <div class="badge-popup-desc">${b.description}</div>
+    <div class="badge-popup-bar" style="background:linear-gradient(90deg,${b.accent}99,transparent)"></div>
+    <div class="badge-popup-arrow"></div>
+  `;
+  return p;
+}
+
+function renderTabs() {
+  const tabs = $('tabs');
+  tabs.innerHTML = '';
+  [['projects','Projects',projects.length],['ongoing','Ongoing',ongoing.length]].forEach(([id,label,n]) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (activeTab === id ? ' active' : '');
+    btn.innerHTML = `${label} <span class="tab-count">${n}</span>`;
+    btn.onclick = () => { activeTab = id; renderTabs(); renderList(); };
+    tabs.appendChild(btn);
+  });
+}
+
+function renderList() {
+  const list = $('list');
+  list.innerHTML = '';
+  const items = activeTab === 'projects' ? projects : ongoing;
+  if (!items.length) {
+    list.innerHTML = `<div class="empty">nothing here yet</div>`;
+    return;
+  }
+  items.forEach((p, i) => {
+    const el = mkCard(p, activeTab === 'ongoing');
+    list.appendChild(el);
+    setTimeout(() => el.classList.add('in'), i * 70 + 30);
+    if (activeTab === 'ongoing' && p.progress != null) {
+      setTimeout(() => {
+        const fill = el.querySelector('.progress-fill');
+        if (fill) fill.style.width = p.progress + '%';
+      }, i * 70 + 200);
+    }
+  });
+}
+
+function mkCard(p, isOngoing) {
+  const a = document.createElement('a');
+  a.href = p.link;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  a.className = 'proj' + (isOngoing ? ' ongoing' : '');
+
+  const langDot = `<span class="lang-dot" style="background:${p.langColor};box-shadow:0 0 5px ${p.langColor}66"></span>`;
+  const tags = p.tags.map(t => `<span class="tag">${t}</span>`).join('');
+  const progress = isOngoing && p.progress != null ? `
+    <div class="progress-wrap">
+      <div class="progress-head">
+        <span class="progress-label">Progress</span>
+        <span class="progress-pct">${p.progress}%</span>
+      </div>
+      <div class="progress-bg"><div class="progress-fill"></div></div>
+    </div>
+  ` : '';
+
+  a.innerHTML = `
+    <div class="proj-top-bar"></div>
+    <div class="proj-head">
+      <span class="proj-name">${p.name}</span>
+      <div class="proj-icons">
+        <span class="proj-icon">${ghIcon}</span>
+        <span class="proj-icon">${extLink}</span>
+      </div>
+    </div>
+    <div class="proj-desc">${clip(p.description)}</div>
+    ${progress}
+    <div class="proj-meta">
+      <div class="lang-wrap">${langDot}<span class="lang-name">${p.language}</span></div>
+      ${tags}
+    </div>
+  `;
+  return a;
+}
+
+load().catch(() => {
+  document.body.innerHTML = '<div style="color:#72767d;display:flex;align-items:center;justify-content:center;height:100vh;font-family:Inter,sans-serif">failed to load profile data</div>';
+});
+</script>
+</body>
 </html>
